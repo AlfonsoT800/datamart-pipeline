@@ -78,8 +78,8 @@ Desde `api` hacia `hadoop` (con `BatchMode=yes`, que falla si pidiera contraseñ
 
 | Método | Tiempo (`real`) |
 |---|---|
-| Script secuencial (Python, `csv`) | <<11.96 s>> |
-| Hadoop Streaming (standalone) | <<36.61 s>> |
+| Script secuencial (Python, `csv`) | 11.96 s |
+| Hadoop Streaming (standalone) | 36.61 s |
 
 Ambos resultados son idénticos (`diff` sin diferencias, 96 líneas).
 
