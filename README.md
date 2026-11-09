@@ -1,8 +1,8 @@
 # Pipeline de datos contenerizado: DataMart
 
 **Materia:** Manejo Masivo de Datos (Big Data), Segundo Parcial
-**Alumno:** <<tu nombre>>
-**Matrícula:** <<tu matrícula de 9 dígitos>>
+**Alumno:** Alfonso Salazar FLores
+**Matrícula:** 125053920
 **Pregunta asignada (último dígito 0):** ingreso total (`cantidad × precio_unitario`) por categoría y mes.
 
 ## Arquitectura
@@ -20,10 +20,10 @@ El dataset se monta como volumen de solo lectura en `/data/input`.
 ## Cómo reproducir
 
 ```bash
-git clone <<URL del repo>> && cd datamart-pipeline
+git clone https://github.com/AlfonsoT800/datamart-pipeline.git && cd datamart-pipeline
 
 # 1. Dataset (script del profesor, con tu matrícula como semilla)
-python3 generar_dataset.py <<MATRICULA>>   # genera data/ventas.csv
+python3 generar_dataset.py 125053920   # genera data/ventas.csv
 
 # 2. Llave SSH, carpetas y .env
 ./setup.sh

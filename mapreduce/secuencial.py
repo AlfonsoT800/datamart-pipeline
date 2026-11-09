@@ -10,16 +10,16 @@ with open(ruta, newline="") as f:
     lector = csv.reader(f)
     next(lector, None)  # encabezado
     for c in lector:
-        if len(c) != 9:
+        if len(c) != 8:
             continue
         try:
             fecha = c[1]
-            if len(fecha) != 10 or fecha[4] != "-":
+            if len(fecha) < 10 or fecha[4] != "-":
                 continue
-            categoria = c[5].strip()
+            categoria = c[3].strip()
             if not categoria:
                 continue
-            totales[f"{categoria}|{fecha[:7]}"] += int(c[6]) * round(float(c[7]) * 100)
+            totales[f"{categoria}|{fecha[:7]}"] += int(c[5]) * round(float(c[6]) * 100)
         except (ValueError, IndexError):
             continue
 
