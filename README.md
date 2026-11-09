@@ -57,22 +57,22 @@ Para comprobar la persistencia: `docker compose down` y luego `docker compose up
 ## Evidencias
 
 ### A1. `hadoop version`
-![hadoop version](docs/01_hadoop_version.png)
+<img src="docs/01_hadoop_version.png" alt="hadoop version" width="700">
 
 ### B. SSH sin contraseña
 `ssh localhost` dentro del contenedor `hadoop`:
-![ssh localhost](docs/02_ssh_localhost.png)
+<img src="docs/02_ssh_localhost.png" alt="ssh localhost" width="700">
 
 Desde `api` hacia `hadoop` (con `BatchMode=yes`, que falla si pidiera contraseña):
-![ssh api a hadoop](docs/03_ssh_api_hadoop.png)
+<img src="docs/03_ssh_api_hadoop.png" alt="ssh api a hadoop" width="700">
 
 ### C1. Salida del job MapReduce
 96 filas (8 categorías × 12 meses).
-![job](docs/04_job_mapreduce.png)
+<img src="docs/04_job_mapreduce.png" alt="job" width="700">
 
 ### D. Respuesta de la API y persistencia
-![api](docs/05_api.png)
-![persistencia](docs/06_persistencia.png)
+<img src="docs/05_api.png" alt="api" width="700">
+<img src="docs/06_persistencia.png" alt="persistencia" width="700">
 
 ## Comparativa de rendimiento (C2)
 
