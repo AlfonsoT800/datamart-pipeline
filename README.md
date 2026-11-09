@@ -49,7 +49,7 @@ DB_HOST=localhost python3 cargar_resultados.py
 
 # 6. Consultar la API
 curl localhost:8000/resultados
-curl localhost:8000/resultados/Ropa
+curl localhost:8000/resultados/Bebidas
 ```
 
 Para comprobar la persistencia: `docker compose down` y luego `docker compose up -d`. Los datos siguen ahí.
@@ -67,7 +67,7 @@ Desde `api` hacia `hadoop` (con `BatchMode=yes`, que falla si pidiera contraseñ
 <img src="docs/03_ssh_api_hadoop.png" alt="ssh api a hadoop" width="700">
 
 ### C1. Salida del job MapReduce
-96 filas (8 categorías × 12 meses).
+120 filas (10 categorías × 12 meses).
 <img src="docs/04_job_mapreduce.png" alt="job" width="700">
 
 ### D. Respuesta de la API y persistencia
@@ -78,8 +78,8 @@ Desde `api` hacia `hadoop` (con `BatchMode=yes`, que falla si pidiera contraseñ
 
 | Método | Tiempo (`real`) |
 |---|---|
-| Script secuencial (Python, `csv`) | 11.96 s |
-| Hadoop Streaming (standalone) | 36.61 s |
+| Script secuencial (Python, `csv`) | TIEMPO_SECUENCIAL |
+| Hadoop Streaming (standalone) | TIEMPO_HADOOP |
 
 Ambos resultados son idénticos (`diff` sin diferencias, 96 líneas).
 
