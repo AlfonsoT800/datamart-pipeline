@@ -81,7 +81,7 @@ Desde `api` hacia `hadoop` (con `BatchMode=yes`, que falla si pidiera contraseñ
 | Script secuencial (Python, `csv`) | TIEMPO_SECUENCIAL |
 | Hadoop Streaming (standalone) | TIEMPO_HADOOP |
 
-Ambos resultados son idénticos (`diff` sin diferencias, 96 líneas).
+Ambos resultados son idénticos (`diff` sin diferencias, 120 líneas).
 
 El script secuencial fue más rápido que Hadoop. En modo standalone Hadoop corre en una sola máquina, así que no hay nodos que repartan el trabajo, pero sí paga costos fijos: arranque de la JVM, planificación del job, ordenamiento y shuffle en disco entre mapper y reducer, y la ejecución del mapper y reducer en Python como procesos externos. Con un archivo de unos cientos de MB, que cabe sin problema en un solo equipo, esos costos pesan más que cualquier beneficio. MapReduce conviene con volúmenes de decenas o cientos de GB, distribuidos en un cluster con HDFS, donde el paralelismo compensa la sobrecarga.
 
@@ -94,7 +94,15 @@ El script secuencial fue más rápido que Hadoop. En modo standalone Hadoop corr
 
 ## Teoría (Parte E)
 
-<<pega aquí las 5 respuestas de la Parte E, con tus palabras>>
+1. **Modos de Hadoop.** En *standalone* todo corre en un solo proceso Java, sin demonios y sin HDFS (usa el sistema de archivos local). En *pseudo-distribuido* corren los demonios (NameNode, DataNode, ResourceManager) en una sola máquina, cada uno en su proceso. En *totalmente distribuido* los demonios se reparten entre varios nodos de un cluster. HDFS se usa en pseudo-distribuido y en distribuido.
+
+2. **Volumen vs COPY.** El CSV pesa cientos de MB y haría la imagen enorme y lenta de construir y subir. Además, cada alumno tiene un dataset distinto y con un volumen se cambia sin reconstruir la imagen. Con `:ro` se protege el original, y los datos no viajan dentro de la imagen ni del repositorio.
+
+3. **`down` vs `down -v`.** `docker compose down` elimina contenedores y red, pero el volumen nombrado `pgdata` se conserva y los datos de la base siguen ahí. `docker compose down -v` también borra los volúmenes, así que se pierden los datos y hay que recargar los resultados.
+
+4. **MapReduce vs secuencial.** Con 336 MB el costo fijo de Hadoop (arranque de la JVM, planificación, ordenamiento y shuffle en disco) pesa más que el paralelismo, y en standalone no hay varios nodos; por eso el secuencial tardó 15 s y Hadoop 36 s. Conviene con datos de decenas o cientos de GB que no caben en una máquina o tardan demasiado, con un cluster y HDFS que reparta el cómputo cerca de los datos.
+
+5. **CMD/ENTRYPOINT y COPY/ADD.** `CMD` es el comando por defecto y se reemplaza fácil con `docker run imagen otro-comando`; `ENTRYPOINT` es el ejecutable fijo y lo que se pasa al `run` se agrega como argumentos. `COPY` solo copia archivos locales a la imagen; `ADD` además descomprime tarballs locales y acepta URLs, por eso se prefiere `COPY` salvo que se necesite eso.
 
 ## Estructura del repo
 
