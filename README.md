@@ -94,16 +94,15 @@ El script secuencial fue más rápido que Hadoop. En modo standalone Hadoop corr
 
 ## Teoría (Parte E)
 
-1. **Modos de Hadoop.** En *standalone* todo corre en un solo proceso Java, sin demonios y sin HDFS (usa el sistema de archivos local). En *pseudo-distribuido* corren los demonios (NameNode, DataNode, ResourceManager) en una sola máquina, cada uno en su proceso. En *totalmente distribuido* los demonios se reparten entre varios nodos de un cluster. HDFS se usa en pseudo-distribuido y en distribuido.
+**1. Modos de Hadoop.** En modo *standalone* Hadoop corre todo en un solo proceso, sin demonios, y lee archivos del disco normal; es el que usé en el examen. En *pseudo-distribuido* corren los demonios (NameNode, DataNode, ResourceManager) como procesos separados, pero todos en la misma máquina. En *totalmente distribuido* esos demonios están repartidos en varios nodos. HDFS se usa en pseudo-distribuido y en distribuido, no en standalone.
 
-2. **Volumen vs COPY.** El CSV pesa cientos de MB y haría la imagen enorme y lenta de construir y subir. Además, cada alumno tiene un dataset distinto y con un volumen se cambia sin reconstruir la imagen. Con `:ro` se protege el original, y los datos no viajan dentro de la imagen ni del repositorio.
+**2. Volumen y no COPY.** Primero, el CSV pesa 336 MB: con COPY la imagen quedaría enorme y tardaría en construirse y moverse. Segundo, cada alumno tiene un dataset distinto, y con un volumen basta cambiar el archivo sin reconstruir la imagen. Además lo monté con `:ro` para que el contenedor no pueda modificar el original, y así el CSV no viaja dentro de la imagen.
 
-3. **`down` vs `down -v`.** `docker compose down` elimina contenedores y red, pero el volumen nombrado `pgdata` se conserva y los datos de la base siguen ahí. `docker compose down -v` también borra los volúmenes, así que se pierden los datos y hay que recargar los resultados.
+**3. `down` y `down -v`.** Con `docker compose down` se borran los contenedores y la red, pero el volumen `pgdata` se queda, así que los datos de la base siguen ahí al volver a levantar. Con `docker compose down -v` también se borra el volumen y se pierden los datos; en ese caso hay que volver a correr `cargar_resultados.py`. Lo comprobé en mi proyecto.
 
-4. **MapReduce vs secuencial.** Con 336 MB el costo fijo de Hadoop (arranque de la JVM, planificación, ordenamiento y shuffle en disco) pesa más que el paralelismo, y en standalone no hay varios nodos; por eso el secuencial tardó 15 s y Hadoop 36 s. Conviene con datos de decenas o cientos de GB que no caben en una máquina o tardan demasiado, con un cluster y HDFS que reparta el cómputo cerca de los datos.
+**4. MapReduce vs script secuencial.** En mi prueba el secuencial tardó 15.13 s y Hadoop 35.67 s. Con 336 MB Hadoop gasta tiempo en arrancar la JVM, planear el job y ordenar y mover datos en el shuffle, y en standalone no hay varios nodos que compensen ese costo. MapReduce conviene cuando los datos son de decenas o cientos de GB, ya no caben o tardan demasiado en una sola máquina, y hay un cluster con HDFS que reparte el trabajo.
 
-5. **CMD/ENTRYPOINT y COPY/ADD.** `CMD` es el comando por defecto y se reemplaza fácil con `docker run imagen otro-comando`; `ENTRYPOINT` es el ejecutable fijo y lo que se pasa al `run` se agrega como argumentos. `COPY` solo copia archivos locales a la imagen; `ADD` además descomprime tarballs locales y acepta URLs, por eso se prefiere `COPY` salvo que se necesite eso.
-
+**5. CMD/ENTRYPOINT y COPY/ADD.** `CMD` es el comando por defecto del contenedor y se puede reemplazar al hacer `docker run imagen otro-comando`. `ENTRYPOINT` es el ejecutable fijo, y lo que escribo en el `run` se agrega como argumentos. `COPY` solo copia archivos locales a la imagen; `ADD` hace lo mismo pero además descomprime tar locales y acepta URLs, por eso se prefiere `COPY`.
 ## Estructura del repo
 
 ```
