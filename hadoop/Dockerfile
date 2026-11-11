@@ -14,7 +14,7 @@ ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
 RUN set -eux; \
     if [ "$TARGETARCH" = "arm64" ]; then SUFFIX="-aarch64"; else SUFFIX=""; fi; \
-    curl -fsSL "https://dlcdn.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}${SUFFIX}.tar.gz" \
+    curl -fsSL "https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}${SUFFIX}.tar.gz" \
       | tar -xz -C /opt; \
     mv /opt/hadoop-${HADOOP_VERSION} $HADOOP_HOME; \
     echo "export JAVA_HOME=${JAVA_HOME}" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh
